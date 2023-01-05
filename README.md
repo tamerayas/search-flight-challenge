@@ -1,4 +1,4 @@
-# flight-ticket-app
+# search-flight-challenge
 
 ## Project setup
 ```
