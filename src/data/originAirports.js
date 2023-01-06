@@ -1,18 +1,18 @@
 export default [
     {
         label: 'İstanbul',
-        value: 'İst'
+        value: 'IST'
     },
     {
         label: 'Antalya',
-        value: 'Ant'
+        value: 'AYT'
     },
     {
         label: 'Adana',
-        value: 'Adn'
+        value: 'ADN'
     },
     {
         label: 'İzmir',
-        value: 'İzm'
+        value: 'IZM'
     },
 ]
