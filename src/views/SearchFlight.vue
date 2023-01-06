@@ -5,8 +5,8 @@
       <span>Merhaba</span>
       <span>Nereyi keşfetmek istersiniz?</span>
       <div class="search-wrapper-content">
-        <a-row :gutter="24">
-          <a-col span="7">
+        <a-row :gutter="[24, 12]">
+          <a-col span="7" :xs="24" :sm="12" :md="12" :lg="8" :xl="7">
             <a-select
               v-model:value="selectedOrigin"
               size="large"
@@ -16,7 +16,7 @@
               <template #suffixIcon> <dingtalk-outlined /></template>
             </a-select>
           </a-col>
-          <a-col span="7">
+          <a-col span="7" :xs="24" :sm="12" :md="12" :lg="8" :xl="7">
             <a-select
               size="large"
               v-model:value="selectedDestination"
@@ -26,7 +26,7 @@
               <template #suffixIcon> <dingtalk-outlined /></template>
             </a-select>
           </a-col>
-          <a-col span="4">
+          <a-col span="4" :xs="24" :sm="12" :md="12" :lg="8" :xl="4">
             <div class="border">
               <a-row>
                 <a-col span="12">
@@ -38,7 +38,7 @@
               </a-row>
             </div>
           </a-col>
-          <a-col span="4">
+          <a-col span="4" :xs="24" :sm="12" :md="12" :lg="12" :xl="3">
             <div class="border">
               <a-tooltip placement="bottom">
                 <div class="count">{{ passengerCount }}</div>
@@ -87,9 +87,9 @@
               </a-tooltip>
             </div>
           </a-col>
-          <a-col span="2">
-            <div class="border red">
-              <right-outlined class="outlined confirm" />
+          <a-col span="2" :xs="24" :sm="24" :md="24" :lg="12" :xl="3">
+            <div class="border red" @click="confirm">
+              <right-outlined class="outlined cursor" />
             </div>
           </a-col>
         </a-row>
@@ -101,6 +101,9 @@
 <script>
 import HeaderDivider from "@/components/HeaderDivider.vue";
 import originAirports from "@/data/originAirports";
+import flights from "@/data/flights"
+import { message } from 'ant-design-vue';
+
 import {
   CalendarOutlined,
   RightOutlined,
@@ -130,9 +133,30 @@ export default {
       classSelection: 1,
     };
   },
+  methods: {
+    confirm() {
+      console.log(this.selectedOrigin);
+      console.log(this.selectedDestination);
+
+      if(this.selectedOrigin === 'Nereden' || this.selectedDestination === 'Nereye') {
+        message.info('Lütfen gidiş ve dönüş alanlarını eksiksiz doldurun!');
+        return;
+      }
+      const availableFlights = this.flights.filter(flight => flight.destinationAirport.city.code === this.selectedDestination && flight.originAirport.city.code === this.selectedOrigin)
+      
+      if(availableFlights.length === 0) {
+        message.info('Aradığınız koşullarda sefer bulunamadı!');
+        return;
+      }
+      
+      localStorage.setItem('availableFlights', JSON.stringify(availableFlights));
+      this.$router.push({ name: 'FlightList' })
+    }
+  },
   created() {
     this.originAirports = originAirports;
     this.destinationAirports = originAirports;
+    this.flights = flights.flights;
   },
 };
 </script>
@@ -158,9 +182,9 @@ export default {
     padding: 10px;
     flex-direction: column;
     background-color: rgb(96 105 119 / 60%);
-
+    min-width: 250px;
     .select {
-      width: 200px;
+      width: -webkit-fill-available;
       text-align: left;
     }
   }
@@ -222,11 +246,11 @@ export default {
   font-size: 30px;
 }
 
-.confirm {
+.cursor {
   cursor: pointer;
 }
 
-.confirm:hover {
+.cursor:hover {
   color: #bfbfbf;
 }
 
