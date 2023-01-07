@@ -10,12 +10,12 @@ const routes = [
   {
     path: '/search-flight',
     name: 'SearchFlight',
-    component: () => import(/* webpackChunkName: "about" */ '@/views/SearchFlight.vue')
+    component: () => import(/* webpackChunkName: "searchFlight" */ '@/views/SearchFlight.vue')
   },
   {
     path: '/flight-list',
     name: 'FlightList',
-    component: () => import(/* webpackChunkName: "about" */ '@/views/FlightList.vue')
+    component: () => import(/* webpackChunkName: "flightList" */ '@/views/FlightList.vue')
   },
 ]
 

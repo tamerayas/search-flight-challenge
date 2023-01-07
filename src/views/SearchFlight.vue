@@ -135,28 +135,36 @@ export default {
   },
   methods: {
     confirm() {
-      console.log(this.selectedOrigin);
-      console.log(this.selectedDestination);
-
       if(this.selectedOrigin === 'Nereden' || this.selectedDestination === 'Nereye') {
-        message.info('Lütfen gidiş ve dönüş alanlarını eksiksiz doldurun!');
+        message.warning('Lütfen gidiş ve dönüş alanlarını eksiksiz doldurun!');
         return;
       }
-      const availableFlights = this.flights.filter(flight => flight.destinationAirport.city.code === this.selectedDestination && flight.originAirport.city.code === this.selectedOrigin)
+      const availableFlights = this.flights.filter(flight => flight.destinationAirport.city.name === this.selectedDestination && flight.originAirport.city.name === this.selectedOrigin)
+      console.log('availableFlights', availableFlights);
       
       if(availableFlights.length === 0) {
-        message.info('Aradığınız koşullarda sefer bulunamadı!');
+        message.error('Aradığınız koşullarda sefer bulunamadı!');
         return;
       }
       
+      this.saveToLocal(availableFlights);
+      this.$router.push({ name: 'FlightList' });
+    },
+    saveToLocal(availableFlights) {
       localStorage.setItem('availableFlights', JSON.stringify(availableFlights));
-      this.$router.push({ name: 'FlightList' })
+      localStorage.setItem('selectedOrigin', this.selectedOrigin);
+      localStorage.setItem('selectedDestination', this.selectedDestination);
+      localStorage.setItem('passengerCount', this.passengerCount)
     }
   },
   created() {
+    document.body.style.backgroundColor = '#063048';
     this.originAirports = originAirports;
     this.destinationAirports = originAirports;
     this.flights = flights.flights;
+
+    this.selectedOrigin = localStorage.getItem('selectedOrigin') || 'Nereden';
+    this.selectedDestination = localStorage.getItem('selectedDestination') || 'Nereye';
   },
 };
 </script>
@@ -180,9 +188,8 @@ export default {
     border: 1px solid transparent;
     width: 50%;
     padding: 10px;
-    flex-direction: column;
     background-color: rgb(96 105 119 / 60%);
-    min-width: 250px;
+    
     .select {
       width: -webkit-fill-available;
       text-align: left;

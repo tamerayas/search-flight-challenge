@@ -1,5 +1,5 @@
 <template>
-  <div class="header-wrapper">
+  <div class="header-wrapper" :class="{ list: isList }">
     <div>
       <span>turkishairlines.com</span>
     </div>
@@ -14,15 +14,20 @@
 <script>
 export default {
   name: "HeaderDivider",
+  props: {
+    isList: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+  },
 };
 </script>
 
 <style lang="scss">
 body {
-  background-color: #063048;
   max-width: calc(100vw - 100px);
   margin: auto;
-  background-color: #063048;
 }
 
 .header-wrapper {
@@ -43,5 +48,19 @@ body {
 .divider {
   margin: 0;
   background-color: #ffffff;
+}
+
+.list {
+  span {
+    color: #000000;
+  }
+
+  .ant-divider .ant-divider-horizontal .divider{
+    background-color: #000000;
+  }
+
+  & ~ .divider {
+    background-color: #000000;
+  }
 }
 </style>
