@@ -101,8 +101,8 @@
 <script>
 import HeaderDivider from "@/components/HeaderDivider.vue";
 import originAirports from "@/data/originAirports";
-import flights from "@/data/flights"
-import { message } from 'ant-design-vue';
+import flights from "@/data/flights";
+import { message } from "ant-design-vue";
 
 import {
   CalendarOutlined,
@@ -135,36 +135,47 @@ export default {
   },
   methods: {
     confirm() {
-      if(this.selectedOrigin === 'Nereden' || this.selectedDestination === 'Nereye') {
-        message.warning('Lütfen gidiş ve dönüş alanlarını eksiksiz doldurun!');
+      if (
+        this.selectedOrigin === "Nereden" ||
+        this.selectedDestination === "Nereye"
+      ) {
+        message.warning("Lütfen gidiş ve dönüş alanlarını eksiksiz doldurun!");
         return;
       }
-      const availableFlights = this.flights.filter(flight => flight.destinationAirport.city.name === this.selectedDestination && flight.originAirport.city.name === this.selectedOrigin)
-      console.log('availableFlights', availableFlights);
-      
-      if(availableFlights.length === 0) {
-        message.error('Aradığınız koşullarda sefer bulunamadı!');
+      const availableFlights = this.flights.filter(
+        (flight) =>
+          flight.destinationAirport.city.name === this.selectedDestination &&
+          flight.originAirport.city.name === this.selectedOrigin
+      );
+
+      if (availableFlights.length === 0) {
+        message.error("Aradığınız koşullarda sefer bulunamadı!");
         return;
       }
-      
+
       this.saveToLocal(availableFlights);
-      this.$router.push({ name: 'FlightList' });
+      this.$router.push({ name: "FlightList" });
     },
     saveToLocal(availableFlights) {
-      localStorage.setItem('availableFlights', JSON.stringify(availableFlights));
-      localStorage.setItem('selectedOrigin', this.selectedOrigin);
-      localStorage.setItem('selectedDestination', this.selectedDestination);
-      localStorage.setItem('passengerCount', this.passengerCount)
-    }
+      localStorage.setItem(
+        "availableFlights",
+        JSON.stringify(availableFlights)
+      );
+      localStorage.setItem("selectedOrigin", this.selectedOrigin);
+      localStorage.setItem("selectedDestination", this.selectedDestination);
+      localStorage.setItem("passengerCount", this.passengerCount);
+    },
   },
   created() {
-    document.body.style.backgroundColor = '#063048';
+    document.body.style.backgroundColor = "#063048";
     this.originAirports = originAirports;
     this.destinationAirports = originAirports;
     this.flights = flights.flights;
 
-    this.selectedOrigin = localStorage.getItem('selectedOrigin') || 'Nereden';
-    this.selectedDestination = localStorage.getItem('selectedDestination') || 'Nereye';
+    this.selectedOrigin = localStorage.getItem("selectedOrigin") || "Nereden";
+    this.selectedDestination =
+      localStorage.getItem("selectedDestination") || "Nereye";
+    this.passengerCount = localStorage.getItem("passengerCount") || 1;
   },
 };
 </script>
@@ -189,7 +200,7 @@ export default {
     width: 50%;
     padding: 10px;
     background-color: rgb(96 105 119 / 60%);
-    
+
     .select {
       width: -webkit-fill-available;
       text-align: left;
@@ -287,6 +298,6 @@ export default {
 }
 
 .red {
-  background-color: red;
+  background-color: #e81b32;
 }
 </style>

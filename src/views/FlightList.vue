@@ -9,7 +9,10 @@
         </div>
         <div class="list-content-promotion">
           <span> Promosyon Kodu </span>
-          <a-switch v-model:checked="isPromotionActive" />
+          <a-switch
+            v-model:checked="isPromotionActive"
+            @change="setPromotion"
+          />
         </div>
         <div class="promotion-code-text" v-if="isPromotionActive">
           <p>
@@ -126,16 +129,24 @@
                     <template #header>
                       <div class="package-header">
                         <span class="package-header-brand">{{
-                          capitalizedWord(expandData.brandCode)
+                          capitalizeWord(expandData.brandCode)
                         }}</span>
                         <div class="package-header-price">
-                          <span class="currency">TRY</span>
-                          <span class="amount">137</span>
+                          <span class="currency">{{
+                            expandData.price.currency
+                          }}</span>
+                          <span class="amount">{{
+                            expandData.price.amount
+                          }}</span>
                         </div>
                       </div>
                     </template>
                     <template #footer>
-                      <a-button size="large" class="package-footer-button"
+                      <a-button
+                        size="large"
+                        class="package-footer-button"
+                        :disabled="expandData.isDisabled"
+                        @click="confirmFlight(expandData)"
                         >Uçuşu Seç</a-button
                       >
                     </template>
@@ -167,21 +178,56 @@ export default {
       flights: [],
       expandedData: [],
       selectedFlightIndex: 0,
-      selectedPackageType: false,
       selectedRadioValue: null,
+      selectedPackageType: null,
     };
   },
   methods: {
     expandPackages(category, type, flightIndex) {
       this.expandedData = category;
-      this.selectedPackageType = type;
       this.selectedFlightIndex = flightIndex;
+      this.selectedPackageType = type;
       this.selectedRadioValue = type + flightIndex;
-      console.log("this.selectedRadioValue", this.selectedRadioValue);
     },
-    capitalizedWord(text) {
-      console.log(text.replace(/([a-z])([A-Z])/g, "$1 $2"));
+    capitalizeWord(text) {
       return text.replace(/([a-z])([A-Z])/g, "$1 $2");
+    },
+    setPromotion(value) {
+      if (!value) {
+        this.flights = JSON.parse(localStorage.getItem("availableFlights"));
+
+        if (this.expandedData?.subcategories?.length > 0) {
+          this.expandedData =
+            this.flights[this.selectedFlightIndex].fareCategories[
+              this.selectedPackageType
+            ];
+        }
+        return;
+      }
+      this.flights.forEach((flight) => {
+        Object.keys(flight.fareCategories).map((category) => {
+          flight.fareCategories[category].subcategories.map((subCategory) => {
+            subCategory.isDisabled = false;
+            if (subCategory.brandCode === "ecoFly") {
+              subCategory.price = {
+                ...subCategory.price,
+                amount:
+                  subCategory.price.amount - subCategory.price.amount * 0.5,
+              };
+            } else {
+              subCategory.isDisabled = true;
+            }
+          });
+        });
+      });
+    },
+    confirmFlight(data) {
+      if (data.status === "AVAILABLE") {
+        localStorage.setItem("price", JSON.stringify(data.price));
+        this.$router.push({ name: "SuccessfullSelection" });
+      } else {
+        this.$router.push({ name: "UnsuccessfullSelection" });
+      }
     },
   },
   created() {
@@ -210,7 +256,7 @@ export default {
 
   .list-content {
     &-button {
-      background-color: red;
+      background-color: #e81b32;
       color: #ffffff;
       width: 100px;
     }
@@ -366,49 +412,54 @@ export default {
 
   .package-footer-button {
     width: 100%;
-    background-color: red;
+    background-color: #e81b32;
     color: #ffffff;
     font-weight: 400;
     font-size: 14px;
+
+    &:disabled {
+      background-color: aliceblue;
+      color: gray;
+    }
   }
 
   .package-header-price {
     display: flex;
   }
+}
 
-  .ant-card-body {
-    padding: 12px;
-    background-color: #f9f9f9;
+.ant-card-body {
+  padding: 12px;
+  background-color: #f9f9f9;
 
-    .ant-card-grid {
-      background-color: #ffffff;
-      min-height: 110px;
-    }
+  .ant-card-grid {
+    background-color: #ffffff;
+    min-height: 110px;
   }
+}
 
-  .ant-card-head {
-    background-color: #063048;
-    height: auto;
-  }
+.ant-card-head {
+  background-color: #063048;
+  height: auto;
+}
 
-  .ant-row {
-    margin-bottom: 10px;
-  }
+.ant-row {
+  margin-bottom: 10px;
+}
 
-  .ant-list {
-    min-height: 250px;
-  }
+.ant-list {
+  min-height: 250px;
+}
 
-  .ant-list-header {
-    background-color: aliceblue;
-    height: 50px;
-  }
+.ant-list-header {
+  background-color: aliceblue;
+  height: 50px;
+}
 
-  .ant-list-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 0 !important;
-  }
+.ant-list-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 0 !important;
 }
 </style>

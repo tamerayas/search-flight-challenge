@@ -17,6 +17,16 @@ const routes = [
     name: 'FlightList',
     component: () => import(/* webpackChunkName: "flightList" */ '@/views/FlightList.vue')
   },
+  {
+    path: '/successfull-selection',
+    name: 'SuccessfullSelection',
+    component: () => import(/* webpackChunkName: "successfullSelection" */ '@/views/SuccessfullSelection.vue')
+  },
+  {
+    path: '/unsuccessfull-selection',
+    name: 'UnsuccessfullSelection',
+    component: () => import(/* webpackChunkName: "unsuccessfullSelection" */ '@/views/UnsuccessfullSelection.vue')
+  },
 ]
 
 const router = createRouter({
