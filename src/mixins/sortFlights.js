@@ -5,7 +5,7 @@ export default {
         case 'departureTime':
           this.flights = this.flights.sort((a, b) => {
 
-            // aSplitHours[0] shows hour, aSplitHours[1] shows minute
+            // aSplitHours[0] refers to hour, aSplitHours[1] refers to minute
             const aSplitHours = a.departureDateTimeDisplay.split(':');
             const aDate = new Date().setHours(aSplitHours[0], aSplitHours[1]);
 

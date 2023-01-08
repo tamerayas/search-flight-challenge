@@ -429,12 +429,6 @@ export default {
   }
 }
 
-@media only screen and (max-width: 768px) {
-  .list-wrapper {
-    width: 100%;
-  }
-}
-
 .ant-card-body {
   padding: 12px;
   background-color: #f9f9f9;
@@ -468,5 +462,11 @@ export default {
   bottom: 0;
   width: 100%;
   padding: 0 !important;
+}
+
+@media only screen and (max-width: 768px) {
+  .list-wrapper {
+    width: 100%;
+  }
 }
 </style>

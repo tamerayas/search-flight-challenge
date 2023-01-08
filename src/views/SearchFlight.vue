@@ -8,6 +8,7 @@
         <a-row :gutter="[24, 12]">
           <a-col span="7" :xs="24" :sm="12" :md="12" :lg="8" :xl="7">
             <a-select
+              @change="handleDestinationSelect('Origin')"
               v-model:value="selectedOrigin"
               size="large"
               class="select"
@@ -19,6 +20,7 @@
           <a-col span="7" :xs="24" :sm="12" :md="12" :lg="8" :xl="7">
             <a-select
               size="large"
+              @change="handleDestinationSelect('Destination')"
               v-model:value="selectedDestination"
               class="select"
               :options="destinationAirports"
@@ -165,6 +167,20 @@ export default {
       localStorage.setItem("selectedDestination", this.selectedDestination);
       localStorage.setItem("passengerCount", this.passengerCount);
     },
+    handleDestinationSelect(type) {
+      if (this.selectedOrigin === this.selectedDestination) {
+        const index = this.originAirports.findIndex(
+          (airport) => airport.value === this[`selected${type}`]
+        );
+
+        this[`selected${type}`] =
+          this[`${type.toLowerCase()}Airports`][
+            this[`${type.toLowerCase()}Airports`].length > index + 1
+              ? index + 1
+              : index - 1
+          ].value;
+      }
+    },
   },
   created() {
     document.body.style.backgroundColor = "#063048";
@@ -175,7 +191,7 @@ export default {
     this.selectedOrigin = localStorage.getItem("selectedOrigin") || "Nereden";
     this.selectedDestination =
       localStorage.getItem("selectedDestination") || "Nereye";
-    this.passengerCount = localStorage.getItem("passengerCount") || 1;
+    this.passengerCount = Number(localStorage.getItem("passengerCount")) || 1;
   },
 };
 </script>

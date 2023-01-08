@@ -77,4 +77,10 @@ export default {
   background-color: black;
   opacity: 0.3;
 }
+
+@media only screen and (max-width: 768px) {
+  .unsuccess-wrapper {
+    width: 100%;
+  }
+}
 </style>
