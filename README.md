@@ -1,5 +1,8 @@
 # search-flight-challenge
 
+Live Version: https://search-flight-challenge.vercel.app/
+![image](https://user-images.githubusercontent.com/59441102/211198510-23359a34-314e-493b-b0ed-c1af035fa797.png)
+
 ## Project setup
 ```
 npm install
