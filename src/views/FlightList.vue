@@ -313,6 +313,7 @@ export default {
           }
 
           .price-wrap {
+            white-space: nowrap;
             span {
               display: block;
               text-align: center;
@@ -425,6 +426,12 @@ export default {
 
   .package-header-price {
     display: flex;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .list-wrapper {
+    width: 100%;
   }
 }
 

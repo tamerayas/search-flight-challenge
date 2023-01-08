@@ -197,7 +197,7 @@ export default {
   &-content {
     margin: auto;
     border: 1px solid transparent;
-    width: 50%;
+    width: 60%;
     padding: 10px;
     background-color: rgb(96 105 119 / 60%);
 
@@ -299,5 +299,11 @@ export default {
 
 .red {
   background-color: #e81b32;
+}
+
+@media only screen and (max-width: 768px) {
+  .search-wrapper-content {
+    width: 100%;
+  }
 }
 </style>
