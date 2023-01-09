@@ -110,7 +110,7 @@ export default {
         return;
       }
 
-      // this.saveToLocal(availableFlights);
+      this.saveToLocal(availableFlights);
       this.$router.push({ name: "FlightList" });
     },
     saveToLocal(availableFlights) {
@@ -121,9 +121,12 @@ export default {
       localStorage.setItem("selectedOrigin", this.selectedOrigin);
       localStorage.setItem("selectedDestination", this.selectedDestination);
       localStorage.setItem("passengerCount", this.passengerCount);
+      localStorage.setItem("selectedClass", this.selectedClass);
     },
     handleDestinationSelect(type) {
       if (this.selectedOrigin === this.selectedDestination) {
+        message.error("Gidiş-dönüş yerleri aynı olamaz!");
+
         const index = this.originAirports.findIndex(
           (airport) => airport.value === this[`selected${type}`]
         );
@@ -153,6 +156,7 @@ export default {
     this.selectedDestination =
       localStorage.getItem("selectedDestination") || "Nereye";
     this.passengerCount = Number(localStorage.getItem("passengerCount")) || 1;
+    this.selectedClass = Number(localStorage.getItem("selectedClass")) || 1;
   },
 };
 </script>

@@ -17,7 +17,7 @@
             </a-col>
             <a-col span="14" class="flex">
               <a-button
-                @click="passengerCount > 1 ? (passengerCount -= 1) : ''"
+                @click="passengerCount > 1 ? $emit('setPassengerCount', passengerCount - 1) : ''"
                 :disabled="passengerCount === 1"
                 >-</a-button
               >
@@ -26,7 +26,7 @@
                 class="footer-input"
                 v-model:value="passengerCountValue"
               />
-              <a-button @click="passengerCount += 1">+</a-button>
+              <a-button @click="$emit('setPassengerCount', passengerCount + 1)">+</a-button>
             </a-col>
           </a-row>
         </div>
