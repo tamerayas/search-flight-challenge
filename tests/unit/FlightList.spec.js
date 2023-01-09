@@ -43,8 +43,6 @@ describe('FlightList.vue', () => {
         await flushPromises();
         wrapper.vm.confirmFlight(category);
 
-        console.log(wrapper.expandedData);
-
         expect(wrapper.findComponent({ name: 'SuccessfullSelection' }).exists());
     })
 })
