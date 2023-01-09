@@ -41,53 +41,12 @@
             </div>
           </a-col>
           <a-col span="4" :xs="24" :sm="12" :md="12" :lg="12" :xl="3">
-            <div class="border">
-              <a-tooltip placement="bottom">
-                <div class="count">{{ passengerCount }}</div>
-                <template #title>
-                  <span>Kabin ve yolcu seçimi</span>
-                  <div class="search-wrapper-tooltip-header">
-                    <a-radio-group
-                      v-model:value="classSelection"
-                      name="radioGroup"
-                    >
-                      <a-radio :value="1" class="radio">Economy Class</a-radio>
-                      <a-radio :value="2" class="radio">Business Class</a-radio>
-                    </a-radio-group>
-                  </div>
-                  <div class="search-wrapper-tooltip-footer">
-                    <a-row>
-                      <a-col span="10">
-                        <span>Yolcu</span>
-                      </a-col>
-                      <a-col span="14" class="flex">
-                        <a-button
-                          @click="
-                            passengerCount > 1 ? (passengerCount -= 1) : ''
-                          "
-                          :disabled="passengerCount === 1"
-                          >-</a-button
-                        >
-                        <a-input-number
-                          type="number"
-                          class="footer-input"
-                          v-model:value="passengerCount"
-                        />
-                        <a-button @click="passengerCount += 1">+</a-button>
-                      </a-col>
-                    </a-row>
-                  </div>
-                </template>
-                <div>
-                  <user-outlined class="outlined" v-if="passengerCount === 1" />
-                  <team-outlined
-                    class="outlined"
-                    v-else-if="passengerCount === 2"
-                  />
-                  <usergroup-add-outlined class="outlined" v-else />
-                </div>
-              </a-tooltip>
-            </div>
+            <Popover
+              :passenger-count="passengerCount"
+              :selected-class="selectedClass"
+              @set-passenger-count="setPassengerCount"
+              @set-selected-class="setSelectedClass"
+            />
           </a-col>
           <a-col span="2" :xs="24" :sm="24" :md="24" :lg="12" :xl="3">
             <div class="border red" @click="confirm">
@@ -102,6 +61,7 @@
 
 <script>
 import HeaderDivider from "@/components/HeaderDivider.vue";
+import Popover from "@/components/Popover.vue";
 import originAirports from "@/data/originAirports";
 import flights from "@/data/flights";
 import { message } from "ant-design-vue";
@@ -109,20 +69,15 @@ import { message } from "ant-design-vue";
 import {
   CalendarOutlined,
   RightOutlined,
-  UserOutlined,
-  UsergroupAddOutlined,
-  TeamOutlined,
   DingtalkOutlined,
 } from "@ant-design/icons-vue";
 export default {
   name: "SearchFlight",
   components: {
     HeaderDivider,
+    Popover,
     CalendarOutlined,
     RightOutlined,
-    UserOutlined,
-    UsergroupAddOutlined,
-    TeamOutlined,
     DingtalkOutlined,
   },
   data() {
@@ -132,7 +87,7 @@ export default {
       passengerCount: 1,
       selectedOrigin: "Nereden",
       selectedDestination: "Nereye",
-      classSelection: 1,
+      selectedClass: 1,
     };
   },
   methods: {
@@ -180,6 +135,12 @@ export default {
               : index - 1
           ].value;
       }
+    },
+    setPassengerCount(payload) {
+      this.passengerCount = payload;
+    },
+    setSelectedClass(payload) {
+      this.selectedClass = payload;
     },
   },
   created() {

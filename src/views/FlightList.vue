@@ -3,27 +3,7 @@
     <HeaderDivider :isList="true" />
     <div class="list-wrapper">
       <div class="list-content">
-        <a-button size="small" class="list-content-button">Uçuş</a-button>
-        <div class="list-content-info">
-          <span>{{ flightInformation }} </span>
-        </div>
-        <div class="list-content-promotion">
-          <span> Promosyon Kodu </span>
-          <a-switch
-            v-model:checked="isPromotionActive"
-            @change="setPromotion"
-          />
-        </div>
-        <div class="promotion-code-text" v-if="isPromotionActive">
-          <p>
-            Promosyon Kodu seçeneği ile tüm Economy kabini Eco Fly paketlerini
-            %50 indirimle satın alabilirsiniz!
-          </p>
-          <p>
-            Promosyon Kodu seçeneği aktifken Eco Fly paketi haricinde seçim
-            yapılamamaktadır.
-          </p>
-        </div>
+        <FlightListHeader @set-promotion-value="setPromotionValue" />
         <div class="flight-list">
           <a-card>
             <template #extra>
@@ -54,15 +34,27 @@
                 <a-card-grid class="list-grid">
                   <div class="card-content">
                     <div class="destination-info">
-                      <span>{{ flight.arrivalDateTimeDisplay }}</span>
-                      <span>{{ flight.originAirport.city.code }}</span>
-                      <span>{{ flight.originAirport.city.name }}</span>
+                      <span class="arrival">{{
+                        flight.arrivalDateTimeDisplay
+                      }}</span>
+                      <span class="cit-code">{{
+                        flight.originAirport.city.code
+                      }}</span>
+                      <span class="city-name">{{
+                        flight.originAirport.city.name
+                      }}</span>
                     </div>
                     <div class="card-content-border"></div>
                     <div class="destination-info">
-                      <span>{{ flight.departureDateTimeDisplay }}</span>
-                      <span>{{ flight.destinationAirport.city.code }}</span>
-                      <span>{{ flight.destinationAirport.city.name }}</span>
+                      <span class="arrival">{{
+                        flight.departureDateTimeDisplay
+                      }}</span>
+                      <span class="cit-code">{{
+                        flight.destinationAirport.city.code
+                      }}</span>
+                      <span class="city-name">{{
+                        flight.destinationAirport.city.name
+                      }}</span>
                     </div>
                     <div class="destination">
                       <span>Uçuş Süresi</span>
@@ -71,88 +63,27 @@
                   </div>
                 </a-card-grid>
               </a-col>
-              <a-col
-                :xs="24"
-                :sm="12"
-                :md="12"
-                :lg="12"
-                :xl="6"
-                v-for="(category, index) in flight.fareCategories"
-                :key="index"
-              >
-                <a-card-grid class="list-grid">
-                  <div class="class-information">
-                    <div class="class-wrap">
-                      <div class="circle">
-                        <a-radio
-                          :checked="selectedRadioValue === index + flightIndex"
-                          :value="selectedRadioValue === index + flightIndex"
-                          @click="expandPackages(category, index, flightIndex)"
-                        >
-                          <span class="class-type">{{ index }}</span>
-                        </a-radio>
-                      </div>
-                    </div>
-                    <div class="price-wrap">
-                      <span class="passanger-info">Yolcu Başına</span>
-                      <span class="price"
-                        >{{ category.subcategories[0].price.currency }}
-                        {{ category.subcategories[0].price.amount }}</span
-                      >
-                    </div>
-                    <div class="arrow">
-                      <down-outlined />
-                    </div>
-                  </div>
-                </a-card-grid>
-              </a-col>
-              <a-col
-                :xs="24"
-                :sm="12"
-                :md="12"
-                :lg="8"
-                :xl="8"
+
+              <FlightListFareCategory
+                v-for="(category, classType) in flight.fareCategories"
+                :key="classType"
+                :category="category"
+                :selected-radio-value="selectedRadioValue"
+                :flight-index="flightIndex"
+                :class-type="classType"
+                @expand-packages="expandPackages"
+              />
+
+              <FlightListSubCategory
                 v-for="(
                   expandData, expandedIndex
                 ) in expandedData.subcategories"
                 :key="expandedIndex"
-              >
-                <div v-if="flightIndex === selectedFlightIndex">
-                  <a-list
-                    size="small"
-                    bordered
-                    :data-source="expandData.rights"
-                  >
-                    <template #renderItem="{ item }">
-                      <a-list-item>{{ item }}</a-list-item>
-                    </template>
-                    <template #header>
-                      <div class="package-header">
-                        <span class="package-header-brand">{{
-                          capitalizeWord(expandData.brandCode)
-                        }}</span>
-                        <div class="package-header-price">
-                          <span class="currency">{{
-                            expandData.price.currency
-                          }}</span>
-                          <span class="amount">{{
-                            expandData.price.amount
-                          }}</span>
-                        </div>
-                      </div>
-                    </template>
-                    <template #footer>
-                      <a-button
-                        size="large"
-                        class="package-footer-button"
-                        :disabled="expandData.isDisabled"
-                        @click="confirmFlight(expandData)"
-                        >Uçuşu Seç</a-button
-                      >
-                    </template>
-                  </a-list>
-                </div>
-              </a-col>
+                :flightIndex="flightIndex"
+                :selectedFlightIndex="selectedFlightIndex"
+                :expandData="expandData"
+                @confirmFlight="confirmFlight"
+              />
             </a-row>
           </a-card>
         </div>
@@ -163,18 +94,22 @@
 
 <script>
 import HeaderDivider from "@/components/HeaderDivider.vue";
-import { DownOutlined } from "@ant-design/icons-vue";
+import FlightListHeader from "@/components/FlightList/FlightListHeader.vue";
+import FlightListSubCategory from "@/components/FlightList/FlightListSubCategory.vue";
+import FlightListFareCategory from "@/components/FlightList/FlightListFareCategory.vue";
 import sortFlights from "@/mixins/sortFlights";
+import setPromotion from "@/mixins/setPromotion";
 export default {
   name: "FlightList",
   components: {
     HeaderDivider,
-    DownOutlined,
+    FlightListHeader,
+    FlightListFareCategory,
+    FlightListSubCategory,
   },
-  mixins: [sortFlights],
+  mixins: [sortFlights, setPromotion],
   data() {
     return {
-      isPromotionActive: false,
       flights: [],
       expandedData: [],
       selectedFlightIndex: 0,
@@ -189,38 +124,6 @@ export default {
       this.selectedPackageType = type;
       this.selectedRadioValue = type + flightIndex;
     },
-    capitalizeWord(text) {
-      return text.replace(/([a-z])([A-Z])/g, "$1 $2");
-    },
-    setPromotion(value) {
-      if (!value) {
-        this.flights = JSON.parse(localStorage.getItem("availableFlights"));
-
-        if (this.expandedData?.subcategories?.length > 0) {
-          this.expandedData =
-            this.flights[this.selectedFlightIndex].fareCategories[
-              this.selectedPackageType
-            ];
-        }
-        return;
-      }
-      this.flights.forEach((flight) => {
-        Object.keys(flight.fareCategories).map((category) => {
-          flight.fareCategories[category].subcategories.map((subCategory) => {
-            subCategory.isDisabled = false;
-            if (subCategory.brandCode === "ecoFly") {
-              subCategory.price = {
-                ...subCategory.price,
-                amount:
-                  subCategory.price.amount - subCategory.price.amount * 0.5,
-              };
-            } else {
-              subCategory.isDisabled = true;
-            }
-          });
-        });
-      });
-    },
     confirmFlight(data) {
       if (data.status === "AVAILABLE") {
         localStorage.setItem("price", JSON.stringify(data.price));
@@ -229,20 +132,14 @@ export default {
         this.$router.push({ name: "UnsuccessfullSelection" });
       }
     },
+    setPromotionValue(val) {
+      this.setPromotion(val);
+    },
   },
   created() {
     document.body.style.backgroundColor = "#ffffff";
     this.flights = JSON.parse(localStorage.getItem("availableFlights"));
     this.sortFlights("default");
-  },
-  computed: {
-    flightInformation() {
-      const selectedOrigin = localStorage.getItem("selectedOrigin");
-      const selectedDestination = localStorage.getItem("selectedDestination");
-      const passengerCount = localStorage.getItem("passengerCount");
-
-      return `${selectedOrigin} - ${selectedDestination}, ${passengerCount} Yolcu`;
-    },
   },
 };
 </script>
@@ -300,7 +197,6 @@ export default {
           justify-content: space-between;
           line-height: 32px;
           .class-wrap {
-            display: flex;
             align-items: center;
             .circle span {
               font-size: 12px;
@@ -360,14 +256,16 @@ export default {
         }
 
         .destination-info {
-          span:nth-child(1) {
+          .arrival {
             font-weight: 700;
           }
-          span:nth-child(2) {
+
+          .city-code {
             font-weight: 600;
             color: gray;
           }
-          span:nth-child(3) {
+
+          .city-name {
             font-size: 12px;
             font-weight: normal;
             color: gray;
@@ -436,6 +334,7 @@ export default {
   .ant-card-grid {
     background-color: #ffffff;
     min-height: 110px;
+    padding: 15px;
   }
 }
 
