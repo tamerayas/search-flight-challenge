@@ -1,6 +1,8 @@
 export default {
   methods: {
     sortFlights(type) {
+      if(!this.flights) 
+        return
       switch (type) {
         case 'departureTime':
           this.flights = this.flights.sort((a, b) => {

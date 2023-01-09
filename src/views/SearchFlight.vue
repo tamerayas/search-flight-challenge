@@ -49,7 +49,7 @@
             />
           </a-col>
           <a-col span="2" :xs="24" :sm="24" :md="24" :lg="12" :xl="3">
-            <div class="border red" @click="confirm">
+            <div class="border red confirm" @click="confirm">
               <right-outlined class="outlined cursor" />
             </div>
           </a-col>
@@ -110,7 +110,7 @@ export default {
         return;
       }
 
-      this.saveToLocal(availableFlights);
+      // this.saveToLocal(availableFlights);
       this.$router.push({ name: "FlightList" });
     },
     saveToLocal(availableFlights) {
